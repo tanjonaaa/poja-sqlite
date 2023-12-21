@@ -11,6 +11,6 @@ public class EndpointConf {
   @Bean
   public ObjectMapper objectMapper() {
     return new ObjectMapper().configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-          .findAnRegisterModules();
+          .findAndRegisterModules();
   }
 }
