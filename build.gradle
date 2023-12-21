@@ -22,7 +22,7 @@ repositories {
 }
 
 java {
-    group = 'co.tanjona.man'
+    group = 'school.hei.poja'
     sourceCompatibility = '17'
     targetCompatibility = '17'
 }

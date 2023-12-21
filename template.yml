@@ -11,12 +11,7 @@ Globals:
       - x86_64
     Timeout: 600
     
-    VpcConfig:
-      SecurityGroupIds:
-        - !Sub '{{resolve:ssm:/poja-sqlite/sg/id}}'
-      SubnetIds:
-        - !Sub '{{resolve:ssm:/poja-sqlite/subnet/private1/id}}'
-        - !Sub '{{resolve:ssm:/poja-sqlite/subnet/private2/id}}'
+    
     Environment:
       Variables:
         ENV: !Ref Env
@@ -25,12 +20,13 @@ Globals:
         AWS_S3_BUCKET: !Sub '{{resolve:ssm:/poja-sqlite/${Env}/s3/bucket-name}}'
         AWS_SES_SOURCE: noreply@nowhere.com
         DRIVERCLASSNAME: org.sqlite.JDBC
-        SPRING_JPA_DATABASEPLATFORM: co.tanjona.man.repository.conf.SqliteDialect
+        SPRING_JPA_DATABASEPLATFORM: school.hei.poja.repository.conf.SqliteDialect
         DATABASE_URL: jdbc:sqlite:/mnt/efs/sqlite-data:db?cache=shared
         DATABASE_USERNAME: sa
         DATABASE_PASSWORD: sa
         
         
+        JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Dspring.main.lazy-initialization=true -Dspring.datasource.max-active=5 -Dspring.datasource.max-idle=1 -Dspring.datasource.min-idle=1 -Dspring.datasource.initial-size=1
 
 Parameters:
   Env:
@@ -40,8 +36,8 @@ Resources:
   FrontalFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: co.tanjona.man.ApiEventHandler::handleRequest
-      MemorySize: 512
+      Handler: school.hei.poja.ApiEventHandler::handleRequest
+      MemorySize: 2048
       Role: !Sub '{{resolve:ssm:/poja-sqlite/${Env}/execution/role-arn}}'
       FileSystemConfigs:
         - Arn: !Sub '{{resolve:ssm:/poja-sqlite/${Env}/efs/access-point/arn}}'
@@ -56,7 +52,7 @@ Resources:
   WorkerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: co.tanjona.man.MailboxEventHandler::handleRequest
+      Handler: school.hei.poja.MailboxEventHandler::handleRequest
       MemorySize: 1024
       Role: !Sub '{{resolve:ssm:/poja-sqlite/${Env}/execution/role-arn}}'
       FileSystemConfigs:
