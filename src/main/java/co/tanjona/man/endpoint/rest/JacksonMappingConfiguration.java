@@ -1,4 +1,4 @@
-package co.tanjona.man.endpoint.rest.controller;
+package co.tanjona.man.endpoint.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
